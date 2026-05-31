@@ -4,7 +4,7 @@ import React from 'react';
 import { useTelemetry } from '@/context/TelemetryContext';
 
 export function TopHeader() {
-  const { telemetry } = useTelemetry();
+  const { telemetry, isInferencing } = useTelemetry();
 
   return (
     <div className="h-[80px] bg-[#050505] border-b border-[#1a1a1a] flex items-center justify-between px-8 font-mono shrink-0">
@@ -59,10 +59,11 @@ export function TopHeader() {
       <div className="flex items-center gap-6 border-l border-[#1a1a1a] pl-8 h-full py-4">
         <div className="flex flex-col gap-2">
           <span className="text-[9px] text-[#ff003c] font-black tracking-widest flex items-center gap-2">
-            <span className="w-1.5 h-1.5 bg-[#ff003c] rounded-full animate-pulse" /> LIVE TELEMETRY
+            <span className="w-1.5 h-1.5 bg-[#ff003c] rounded-full animate-pulse" /> TELEMETRY (10Hz)
           </span>
-          <span className="text-[9px] text-[#00ff88] font-bold tracking-widest flex items-center gap-2">
-            <span className="w-1.5 h-1.5 bg-[#00ff88] rounded-full" /> CONNECTED
+          <span className={`text-[9px] font-black tracking-widest flex items-center gap-2 transition-colors duration-300 ${isInferencing ? 'text-[#0088ff]' : 'text-[#333]'}`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${isInferencing ? 'bg-[#0088ff] animate-pulse' : 'bg-[#333]'}`} /> 
+            {isInferencing ? 'IBM GRANITE: INFERENCING...' : 'IBM GRANITE: IDLE'}
           </span>
         </div>
       </div>
