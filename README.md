@@ -67,24 +67,24 @@ This transforms racing analytics from passive monitoring into active performance
 
 ## ✨ Key Features
 
-### 📡 Real Telemetry Replay Engine
+###  Real Telemetry Replay Engine
 AEROS-XAI uses OpenF1-compatible telemetry structures to replay real Formula 1 telemetry streams. Available telemetry includes: Speed, RPM, Gear, Throttle, and Brake. Historical telemetry is streamed locally at 10Hz to ensure reliable demonstrations while maintaining realistic racing behavior.
 
-### 🏎️ Vehicle Intelligence
+###  Vehicle Intelligence
 Continuously monitors Engine Temperature, Tire Pressure, Tire Wear, Brake Temperature, Fuel Consumption, Suspension Behavior, and Powertrain Health. The Vehicle Diagnostics Agent identifies mechanical factors contributing to performance degradation.
 
-### 🫀 Driver Intelligence
+###  Driver Intelligence
 Analyzes Heart Rate, Body Temperature, Hydration Status, Oxygen Saturation (SpO₂), Breathing Rate, Stress Indicators, Fatigue Indicators, and G-Force Exposure. The Driver State Agent identifies human-performance factors affecting race outcomes.
 
-### 🌦️ Race Context Intelligence
+###  Race Context Intelligence
 Monitors Track Conditions, Track Grip, Sector Performance, Weather Conditions, and Race Conditions. Provides contextual awareness for strategic decision-making.
 
-### 📊 Performance Attribution Engine
+###  Performance Attribution Engine
 The core innovation of AEROS-XAI. Instead of displaying isolated metrics, the system determines the exact contributors to performance loss.
 *(Example: Driver Contribution: 52% | Vehicle Contribution: 35% | Track Contribution: 13%)*  
 This allows teams to focus on the highest-impact opportunities for performance recovery.
 
-### 🏁 Strategy Intelligence
+###  Strategy Intelligence
 Provides Pit Window Recommendations, Tire Strategy Suggestions, Fuel Strategy Analysis, Undercut Opportunities, and Tactical Recommendations. All recommendations are generated through explainable reasoning pipelines.
 
 ---
