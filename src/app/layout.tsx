@@ -31,15 +31,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-screen h-screen flex bg-[#000] text-white font-sans overflow-hidden">
-        <TelemetryProvider>
-          <NavigationSidebar />
-          <div className="flex-1 flex flex-col h-screen overflow-hidden relative z-10 bg-[#000]">
-            <TopHeader />
-            <div className="flex-1 overflow-y-auto custom-scrollbar bg-[#000]">
-              {children}
-            </div>
-          </div>
-        </TelemetryProvider>
+        {children}
       </body>
     </html>
   );

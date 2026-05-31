@@ -71,100 +71,127 @@ export default function VehiclePage() {
           </div>
 
           {/* POWERTRAIN FEED */}
-          <div className="bg-[#080808] border border-[#1a1a1a] p-3 rounded-xl flex flex-col shrink-0">
-            <span className="text-[9px] text-[#555] uppercase tracking-[0.2em] font-bold mb-3 flex items-center gap-2">
+          <div className="bg-[#080808] border border-[#1a1a1a] p-4 rounded-xl flex flex-col shrink-0 relative overflow-hidden">
+            <span className="text-[9px] text-[#555] uppercase tracking-[0.2em] font-bold mb-5 flex items-center gap-2">
               <Gauge className="w-3 h-3 text-[#555]" /> Powertrain Feed
             </span>
-            <div className="flex flex-col gap-0">
-              {/* RPM */}
-              <div className="flex justify-between items-center py-2 border-b border-[#111]">
-                <span className="text-[9px] text-[#888] font-bold uppercase tracking-widest">RPM</span>
-                <div className="flex items-center gap-2">
-                  <div className="w-16 h-1 bg-[#1a1a1a] rounded-full overflow-hidden">
-                    <div className="h-full bg-[#ff003c] rounded-full transition-all" style={{ width: `${Math.min((telemetry.rpm / 18000) * 100, 100)}%` }} />
-                  </div>
-                  <span className="text-[12px] text-white font-black font-mono leading-none w-12 text-right">{Math.round(telemetry.rpm)}</span>
+            
+            {/* Tachometer (RPM) */}
+            <div className="flex flex-col gap-1.5 mb-5">
+              <div className="flex justify-between items-end">
+                <span className="text-[10px] text-[#888] font-bold uppercase tracking-widest">RPM Limit</span>
+                <span className="text-[22px] font-black text-white font-mono leading-none tracking-tighter drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">{Math.round(telemetry.rpm)}</span>
+              </div>
+              <div className="flex gap-0.5 h-3.5 relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-[#ffdd00]/10 via-[#ff6600]/10 to-[#ff003c]/10 blur-sm pointer-events-none" />
+                {Array.from({ length: 30 }).map((_, i) => {
+                  const percent = i / 30;
+                  const isActive = (telemetry.rpm / 18000) > percent;
+                  const color = percent > 0.85 ? 'bg-[#ff003c] shadow-[0_0_8px_rgba(255,0,60,0.8)]' : percent > 0.60 ? 'bg-[#ff6600] shadow-[0_0_8px_rgba(255,102,0,0.8)]' : 'bg-[#ffdd00] shadow-[0_0_8px_rgba(255,221,0,0.8)]';
+                  return (
+                    <div key={i} className={`flex-1 skew-x-[-20deg] ${isActive ? color : 'bg-[#111]'}`} />
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* Speed & Gear */}
+            <div className="grid grid-cols-2 gap-3 mb-5">
+              <div className="bg-[#0c0c0c] border border-[#1a1a1a] rounded-lg p-3 flex flex-col items-center justify-center relative overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-b from-[#00f0ff]/5 to-transparent pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
+                <span className="text-[9px] text-[#666] font-black uppercase tracking-widest mb-1.5 relative z-10">Speed</span>
+                <div className="flex items-baseline gap-1 relative z-10">
+                  <span className="text-[28px] font-black text-white font-mono tracking-tighter leading-none drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">{Math.round(telemetry.speed)}</span>
+                  <span className="text-[10px] text-[#555] font-bold uppercase">km/h</span>
                 </div>
               </div>
-              {/* Speed */}
-              <div className="flex justify-between items-center py-2 border-b border-[#111]">
-                <span className="text-[9px] text-[#888] font-bold uppercase tracking-widest">Speed</span>
-                <div className="flex items-center gap-2">
-                  <div className="w-16 h-1 bg-[#1a1a1a] rounded-full overflow-hidden">
-                    <div className="h-full bg-[#888] rounded-full transition-all" style={{ width: `${Math.min((telemetry.speed / 350) * 100, 100)}%` }} />
-                  </div>
-                  <span className="text-[12px] text-white font-black font-mono leading-none w-12 text-right">{Math.round(telemetry.speed)}<span className="text-[8px] text-[#555] ml-0.5">km/h</span></span>
+              <div className="bg-[#0c0c0c] border border-[#1a1a1a] rounded-lg p-3 flex flex-col items-center justify-center relative overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-b from-[#00f0ff]/5 to-transparent pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
+                <span className="text-[9px] text-[#666] font-black uppercase tracking-widest mb-1.5 relative z-10">Gear</span>
+                <span className="text-[28px] font-black text-[#00f0ff] font-mono tracking-tighter leading-none drop-shadow-[0_0_10px_rgba(0,240,255,0.4)] relative z-10">{telemetry.gear}</span>
+              </div>
+            </div>
+
+            {/* Temp & Battery */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex items-center gap-3 bg-[#0a0a0a] p-2 rounded-md border border-[#111] relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-[#fbbf24] to-transparent opacity-30" />
+                <div className="relative w-9 h-9 shrink-0">
+                  <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90 drop-shadow-[0_0_5px_rgba(251,191,36,0.3)]">
+                    <path className="text-[#151515]" strokeWidth="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    <path className={telemetry.engineTemp > 108 ? 'text-[#ff003c]' : 'text-[#fbbf24]'} strokeWidth="3" strokeDasharray={`${Math.min(((telemetry.engineTemp - 80) / 50) * 100, 100)}, 100`} strokeLinecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  </svg>
+                </div>
+                <div className="flex flex-col z-10">
+                  <span className="text-[8px] text-[#666] font-black uppercase tracking-widest">Eng Temp</span>
+                  <span className="text-[14px] font-black text-white font-mono">{telemetry.engineTemp.toFixed(1)}°</span>
                 </div>
               </div>
-              {/* Gear */}
-              <div className="flex justify-between items-center py-2 border-b border-[#111]">
-                <span className="text-[9px] text-[#888] font-bold uppercase tracking-widest">Gear</span>
-                <div className="flex items-center gap-2">
-                  <div className="flex gap-0.5">
-                    {[1,2,3,4,5,6,7,8].map(g => (
-                      <div key={g} className={`w-2 h-2 rounded-sm ${g <= telemetry.gear ? 'bg-[#00f0ff]' : 'bg-[#1a1a1a]'}`} />
-                    ))}
-                  </div>
-                  <span className="text-[12px] text-[#00f0ff] font-black font-mono w-12 text-right">{telemetry.gear}</span>
+              <div className="flex items-center gap-3 bg-[#0a0a0a] p-2 rounded-md border border-[#111] relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-1 h-full bg-gradient-to-b from-[#00ff88] to-transparent opacity-30" />
+                <div className="relative w-9 h-9 shrink-0">
+                  <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90 drop-shadow-[0_0_5px_rgba(0,255,136,0.3)]">
+                    <path className="text-[#151515]" strokeWidth="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    <path className="text-[#00ff88]" strokeWidth="3" strokeDasharray={`${telemetry.batteryHealth}, 100`} strokeLinecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  </svg>
                 </div>
-              </div>
-              {/* Engine Temp */}
-              <div className="flex justify-between items-center py-2 border-b border-[#111]">
-                <span className="text-[9px] text-[#888] font-bold uppercase tracking-widest">Engine Temp</span>
-                <div className="flex items-center gap-2">
-                  <div className="w-16 h-1 bg-[#1a1a1a] rounded-full overflow-hidden">
-                    <div className={`h-full rounded-full transition-all ${telemetry.engineTemp > 108 ? 'bg-[#ff003c]' : 'bg-[#fbbf24]'}`} style={{ width: `${Math.min(((telemetry.engineTemp - 80) / 50) * 100, 100)}%` }} />
-                  </div>
-                  <span className={`text-[12px] font-black font-mono leading-none w-12 text-right ${telemetry.engineTemp > 108 ? 'text-[#ff003c]' : 'text-white'}`}>
-                    {telemetry.engineTemp.toFixed(0)}<span className="text-[8px] text-[#555]">°C</span>
-                  </span>
-                </div>
-              </div>
-              {/* Battery ERS */}
-              <div className="flex justify-between items-center py-2">
-                <span className="text-[9px] text-[#888] font-bold uppercase tracking-widest">Battery ERS</span>
-                <div className="flex items-center gap-2">
-                  <div className="w-16 h-1 bg-[#1a1a1a] rounded-full overflow-hidden">
-                    <div className="h-full bg-[#00ff88] rounded-full transition-all" style={{ width: `${telemetry.batteryHealth}%` }} />
-                  </div>
-                  <span className="text-[12px] text-[#00ff88] font-black font-mono leading-none w-12 text-right">{telemetry.batteryHealth.toFixed(1)}<span className="text-[8px] text-[#555]">%</span></span>
+                <div className="flex flex-col z-10">
+                  <span className="text-[8px] text-[#666] font-black uppercase tracking-widest">Bat ERS</span>
+                  <span className="text-[14px] font-black text-white font-mono drop-shadow-[0_0_5px_rgba(255,255,255,0.2)]">{telemetry.batteryHealth.toFixed(1)}%</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* MECHANICAL INTEGRITY */}
-          <div className="bg-[#080808] border border-[#1a1a1a] p-3 rounded-xl shrink-0">
-            <span className="text-[9px] text-[#555] uppercase tracking-[0.2em] font-bold mb-3 flex items-center gap-2">
+          <div className="bg-[#080808] border border-[#1a1a1a] p-4 rounded-xl flex-1 flex flex-col relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#00f0ff]/5 to-transparent pointer-events-none" />
+            <span className="text-[9px] text-[#555] uppercase tracking-[0.2em] font-bold mb-4 flex items-center gap-2 relative z-10">
               <Activity className="w-3 h-3 text-[#555]" /> Mechanical Integrity
             </span>
-            <div className="flex flex-col gap-0">
-              <div className="flex justify-between items-center py-2 border-b border-[#111]">
-                <span className="text-[9px] text-[#888] font-bold uppercase tracking-widest">Gearbox Health</span>
-                <div className="flex items-center gap-2">
-                  <div className="w-16 h-1 bg-[#1a1a1a] rounded-full overflow-hidden">
-                    <div className="h-full bg-[#00ff88] rounded-full" style={{ width: `${(94.2 - (telemetry.rpm / 50000)).toFixed(0)}%` }} />
-                  </div>
-                  <span className="text-[12px] text-[#00ff88] font-black font-mono w-12 text-right">{(94.2 - (telemetry.rpm / 50000)).toFixed(1)}<span className="text-[8px] text-[#555]">%</span></span>
+
+            <div className="flex flex-col gap-5 flex-1 justify-center relative z-10">
+              {/* Gearbox */}
+              <div className="flex flex-col gap-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-[10px] text-[#888] font-bold uppercase tracking-widest">Gearbox Health</span>
+                  <span className="text-[16px] text-[#00f0ff] font-black font-mono drop-shadow-[0_0_8px_rgba(0,240,255,0.4)]">{(94.2 - (telemetry.rpm / 50000)).toFixed(1)}<span className="text-[10px] text-[#00f0ff]/70">%</span></span>
+                </div>
+                <div className="w-full h-1.5 bg-[#111] rounded-full overflow-hidden relative shadow-[inset_0_1px_3px_rgba(0,0,0,0.5)]">
+                   <div className="absolute top-0 left-0 bottom-0 bg-gradient-to-r from-[#00f0ff]/20 via-[#00f0ff]/80 to-[#00f0ff] rounded-full shadow-[0_0_10px_rgba(0,240,255,0.8)]" style={{ width: `${(94.2 - (telemetry.rpm / 50000)).toFixed(0)}%` }}>
+                     <div className="absolute top-0 right-0 bottom-0 w-4 bg-white/40 blur-[2px] animate-pulse" />
+                   </div>
                 </div>
               </div>
-              <div className="flex justify-between items-center py-2 border-b border-[#111]">
-                <span className="text-[9px] text-[#888] font-bold uppercase tracking-widest">Suspension</span>
-                <span className={`text-[9px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded ${telemetry.speed > 250 ? 'bg-[#ff003c]/10 border border-[#ff003c]/20 text-[#ff003c]' : 'bg-[#00f0ff]/10 border border-[#00f0ff]/20 text-[#00f0ff]'}`}>
+
+              {/* Fuel Flow */}
+              <div className="flex flex-col gap-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-[10px] text-[#888] font-bold uppercase tracking-widest">Fuel Flow</span>
+                  <span className="text-[16px] text-white font-black font-mono drop-shadow-[0_0_5px_rgba(255,255,255,0.2)]">{((telemetry.rpm / 12000) * 98.5).toFixed(1)}<span className="text-[10px] text-[#666]"> kg/h</span></span>
+                </div>
+                <div className="flex h-1.5 gap-1">
+                  {Array.from({ length: 15 }).map((_, i) => {
+                    const percent = i / 15;
+                    const isActive = (((telemetry.rpm / 12000) * 98.5) / 105) > percent;
+                    return <div key={i} className={`flex-1 rounded-sm transition-all duration-75 ${isActive ? 'bg-[#00f0ff] shadow-[0_0_8px_rgba(0,240,255,0.4)]' : 'bg-[#111]'}`} />
+                  })}
+                </div>
+              </div>
+
+              {/* Suspension */}
+              <div className="bg-[#0c0c0c] border border-[#1a1a1a] p-3 rounded-lg flex justify-between items-center mt-2 z-10 group hover:border-[#333] transition-colors">
+                <div className="flex flex-col">
+                  <span className="text-[10px] text-[#888] font-bold uppercase tracking-widest group-hover:text-[#aaa] transition-colors">Suspension Load</span>
+                  <span className="text-[8px] text-[#555] uppercase mt-0.5 tracking-widest">Aero Downforce</span>
+                </div>
+                <span className={`text-[11px] font-black uppercase tracking-widest px-3 py-1.5 rounded-sm ${telemetry.speed > 250 ? 'bg-[#ff003c]/10 border border-[#ff003c]/20 text-[#ff003c] shadow-[0_0_10px_rgba(255,0,60,0.2)]' : telemetry.speed > 100 ? 'bg-[#fbbf24]/10 border border-[#fbbf24]/30 text-[#fbbf24] shadow-[0_0_10px_rgba(251,191,36,0.2)]' : 'bg-[#00f0ff]/10 border border-[#00f0ff]/20 text-[#00f0ff] shadow-[0_0_10px_rgba(0,240,255,0.1)]'}`}>
                   {telemetry.speed > 250 ? 'HIGH 4G' : telemetry.speed > 100 ? 'MED 2G' : 'LOW 1G'}
                 </span>
               </div>
-              <div className="flex justify-between items-center py-2">
-                <span className="text-[9px] text-[#888] font-bold uppercase tracking-widest">Fuel Flow</span>
-                <div className="flex items-center gap-2">
-                  <div className="w-16 h-1 bg-[#1a1a1a] rounded-full overflow-hidden">
-                    <div className="h-full bg-[#888] rounded-full" style={{ width: `${Math.min(((telemetry.rpm / 12000) * 98.5) / 98.5 * 100, 100)}%` }} />
-                  </div>
-                  <span className="text-[12px] text-white font-black font-mono w-12 text-right">{((telemetry.rpm / 12000) * 98.5).toFixed(0)}<span className="text-[8px] text-[#555]">kg/h</span></span>
-                </div>
-              </div>
             </div>
           </div>
+
         </div>
 
         {/* CENTER COLUMN: ADVANCED F1 SVG */}
@@ -407,78 +434,157 @@ export default function VehiclePage() {
 
               {/* Center Circular Widget */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <svg viewBox="0 0 100 100" className="w-[160px] h-[160px] opacity-100 drop-shadow-[0_0_15px_rgba(0,0,0,1)]">
+                <svg viewBox="0 0 100 100" className="w-[180px] h-[180px] drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]">
                   <defs>
-                    <radialGradient id="discMetal" cx="50%" cy="50%" r="50%" fx="30%" fy="30%">
-                      <stop offset="0%" stopColor="#444" />
-                      <stop offset="70%" stopColor="#1a1a1a" />
-                      <stop offset="100%" stopColor="#0a0a0a" />
+                    <radialGradient id="discMetal" cx="50%" cy="50%" r="50%">
+                      <stop offset="30%" stopColor="#222" />
+                      <stop offset="60%" stopColor="#444" />
+                      <stop offset="85%" stopColor="#333" />
+                      <stop offset="100%" stopColor="#111" />
                     </radialGradient>
                     <radialGradient id="hubMetal" cx="50%" cy="50%" r="50%">
-                      <stop offset="0%" stopColor="#333" />
-                      <stop offset="80%" stopColor="#111" />
+                      <stop offset="0%" stopColor="#2a2a2a" />
+                      <stop offset="70%" stopColor="#151515" />
                       <stop offset="100%" stopColor="#000" />
                     </radialGradient>
-                    <linearGradient id="heatGlow" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#ff003c" stopOpacity="0.9"/>
-                      <stop offset="100%" stopColor="#ff5500" stopOpacity="0.3"/>
+                    <linearGradient id="caliperPaint" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#ff003c" />
+                      <stop offset="50%" stopColor="#cc0030" />
+                      <stop offset="100%" stopColor="#880020" />
                     </linearGradient>
+                    <linearGradient id="caliperCarbon" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#222" />
+                      <stop offset="50%" stopColor="#111" />
+                      <stop offset="100%" stopColor="#050505" />
+                    </linearGradient>
+                    <radialGradient id="heatGlow" cx="50%" cy="50%" r="50%">
+                      <stop offset="50%" stopColor="#ff5500" stopOpacity="0" />
+                      <stop offset="85%" stopColor="#ff2200" stopOpacity="0.8" />
+                      <stop offset="100%" stopColor="#ff0000" stopOpacity="0" />
+                    </radialGradient>
                     <filter id="glow">
-                      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                      <feGaussianBlur stdDeviation="3" result="blur" />
                       <feMerge>
-                        <feMergeNode in="coloredBlur"/>
-                        <feMergeNode in="SourceGraphic"/>
+                        <feMergeNode in="blur" />
+                        <feMergeNode in="SourceGraphic" />
                       </feMerge>
+                    </filter>
+                    <filter id="dropShadow">
+                      <feDropShadow dx="2" dy="4" stdDeviation="3" floodOpacity="0.6" />
                     </filter>
                   </defs>
 
-                  {/* Outer track/rim */}
-                  <circle cx="50" cy="50" r="46" fill="transparent" stroke="#0a0a0a" strokeWidth="4" />
+                  {/* Outer Rim Boundary */}
+                  <circle cx="50" cy="50" r="48" fill="transparent" stroke="#080808" strokeWidth="2" />
                   
-                  {/* The Brake Disc itself */}
-                  <circle cx="50" cy="50" r="40" fill="url(#discMetal)" stroke="#050505" strokeWidth="1" />
-                  
-                  {/* Faint concentric friction rings */}
-                  <circle cx="50" cy="50" r="35" fill="transparent" stroke="#222" strokeWidth="0.5" />
-                  <circle cx="50" cy="50" r="28" fill="transparent" stroke="#222" strokeWidth="0.5" />
-                  <circle cx="50" cy="50" r="22" fill="transparent" stroke="#222" strokeWidth="0.5" />
+                  {/* Dynamic Heat Glow Base (behind disc) */}
+                  <circle cx="50" cy="50" r="46" fill="url(#heatGlow)" className="animate-pulse opacity-70" />
 
-                  {/* Cooling Holes arranged in a spiral pattern */}
+                  {/* The Main Brake Disc */}
+                  <circle cx="50" cy="50" r="46" fill="url(#discMetal)" stroke="#111" strokeWidth="0.5" />
+                  
+                  {/* Faint concentric friction rings (machining marks) */}
+                  {[42, 38, 34, 30, 26].map(r => (
+                    <circle key={`ring-${r}`} cx="50" cy="50" r={r} fill="transparent" stroke="#1a1a1a" strokeWidth="0.3" opacity="0.6" />
+                  ))}
+
+                  {/* Cooling Holes & Slotted Grooves */}
                   {Array.from({length: 12}).map((_, i) => {
                     const angle = (i * 30) * Math.PI / 180;
-                    const innerX = 50 + 24 * Math.cos(angle);
-                    const innerY = 50 + 24 * Math.sin(angle);
-                    const outerX = 50 + 34 * Math.cos(angle + 0.2);
-                    const outerY = 50 + 34 * Math.sin(angle + 0.2);
+                    // Holes
+                    const h1x = 50 + 26 * Math.cos(angle);
+                    const h1y = 50 + 26 * Math.sin(angle);
+                    const h2x = 50 + 34 * Math.cos(angle + 0.15);
+                    const h2y = 50 + 34 * Math.sin(angle + 0.15);
+                    const h3x = 50 + 42 * Math.cos(angle + 0.3);
+                    const h3y = 50 + 42 * Math.sin(angle + 0.3);
+                    
+                    // Slotted Grooves
+                    const gStartX = 50 + 26 * Math.cos(angle - 0.2);
+                    const gStartY = 50 + 26 * Math.sin(angle - 0.2);
+                    const gEndX = 50 + 44 * Math.cos(angle - 0.5);
+                    const gEndY = 50 + 44 * Math.sin(angle - 0.5);
+
                     return (
-                      <g key={i}>
-                        <circle cx={innerX} cy={innerY} r="1.5" fill="#050505" />
-                        <circle cx={outerX} cy={outerY} r="2" fill="#050505" />
+                      <g key={i} className="opacity-80">
+                        {/* Slotted Curve */}
+                        <path d={`M ${gStartX},${gStartY} Q ${50 + 35 * Math.cos(angle - 0.4)},${50 + 35 * Math.sin(angle - 0.4)} ${gEndX},${gEndY}`} fill="none" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" />
+                        
+                        {/* Drilled Holes */}
+                        <circle cx={h1x} cy={h1y} r="1.2" fill="#000" />
+                        <circle cx={h2x} cy={h2y} r="1.5" fill="#000" />
+                        <circle cx={h3x} cy={h3y} r="1.5" fill="#000" />
                       </g>
                     );
                   })}
 
-                  {/* Dynamic Caliper / Heat Arc based on average temp (assuming high heat) */}
-                  <path d="M 10,50 A 40,40 0 0,1 50,10" fill="transparent" stroke="url(#heatGlow)" strokeWidth="6" strokeLinecap="round" filter="url(#glow)" className="opacity-80 animate-pulse" />
-                  <path d="M 14,67 A 40,40 0 0,0 67,86" fill="transparent" stroke="#ff003c" strokeWidth="3" strokeLinecap="round" className="opacity-40" />
+                  {/* REALISTIC CALIPER & HEAT ARC (Rotated to top right) */}
+                  <g transform="rotate(135 50 50)">
+                    {/* High Heat Edge Arc */}
+                    <path d="M 8,50 A 42,42 0 0,1 50,8" fill="transparent" stroke="#ff003c" strokeWidth="2" strokeLinecap="round" filter="url(#glow)" className="opacity-90 animate-pulse" />
+
+                    {/* Caliper Assembly */}
+                    <g filter="url(#dropShadow)">
+                    {/* Caliper Base Monoblock */}
+                    <path 
+                      d="M 16.6,10.2 A 52,52 0 0,0 16.6,89.8 C 20,93 25,85 28.1,76.0 A 34,34 0 0,1 28.1,24.0 C 25,15 20,7 16.6,10.2 Z" 
+                      fill="url(#caliperPaint)" 
+                      stroke="#ff1a40" 
+                      strokeWidth="0.5" 
+                    />
+
+                    {/* Structural Bevels / Inner Machining */}
+                    <path 
+                      d="M 19,16 A 48,48 0 0,0 19,84 C 21,80 25,76 26.5,72 A 36,36 0 0,1 26.5,28 C 25,24 21,20 19,16 Z" 
+                      fill="#b00020" 
+                      opacity="0.8"
+                    />
+
+                    {/* Carbon Ceramic Bridge (crosses over the pads) */}
+                    <path d="M 27,42 L 32,44 L 32,56 L 27,58 Z" fill="url(#caliperCarbon)" stroke="#111" strokeWidth="0.5" />
+                    
+                    {/* Pistons / Torx Bolts */}
+                    <circle cx="16" cy="25" r="2.5" fill="url(#hubMetal)" stroke="#111" strokeWidth="0.5" />
+                    <circle cx="14" cy="50" r="2.5" fill="url(#hubMetal)" stroke="#111" strokeWidth="0.5" />
+                    <circle cx="16" cy="75" r="2.5" fill="url(#hubMetal)" stroke="#111" strokeWidth="0.5" />
+                    
+                    {/* Inner piston dots */}
+                    <circle cx="16" cy="25" r="1" fill="#111" />
+                    <circle cx="14" cy="50" r="1" fill="#111" />
+                    <circle cx="16" cy="75" r="1" fill="#111" />
+
+                    {/* Fluid Bleed Nipple */}
+                    <path d="M 17,9 L 19,5 L 21,6 L 19,10 Z" fill="#666" stroke="#222" strokeWidth="0.5" />
+                    <circle cx="20" cy="5.5" r="1.5" fill="#888" />
+
+                    {/* Racing Accent Line & White Stripe */}
+                    <path d="M 12.5,35 A 54,54 0 0,0 12.5,65" fill="none" stroke="#fff" strokeWidth="1" strokeLinecap="round" opacity="0.9" />
+                    <path d="M 13.5,38 A 52,52 0 0,0 13.5,62" fill="none" stroke="#ff88a0" strokeWidth="0.5" strokeLinecap="round" opacity="0.7" />
+                  </g>
+                  </g>
 
                   {/* Center Hub */}
-                  <circle cx="50" cy="50" r="16" fill="url(#hubMetal)" stroke="#1a1a1a" strokeWidth="1" />
-                  <circle cx="50" cy="50" r="6" fill="#050505" stroke="#222" strokeWidth="1.5" />
-                  <circle cx="50" cy="50" r="2" fill="#111" />
+                  <circle cx="50" cy="50" r="18" fill="url(#hubMetal)" stroke="#1a1a1a" strokeWidth="1.5" />
+                  <circle cx="50" cy="50" r="7" fill="#050505" stroke="#222" strokeWidth="1" />
+                  <circle cx="50" cy="50" r="3" fill="#111" />
 
-                  {/* Hub bolts */}
+                  {/* Hub bolts / Wheel Studs */}
                   {Array.from({length: 5}).map((_, i) => {
                     const angle = (i * 72) * Math.PI / 180;
-                    const x = 50 + 11 * Math.cos(angle);
-                    const y = 50 + 11 * Math.sin(angle);
-                    return <circle key={`bolt-${i}`} cx={x} cy={y} r="1.5" fill="#555" />;
+                    const bx = 50 + 12 * Math.cos(angle);
+                    const by = 50 + 12 * Math.sin(angle);
+                    return (
+                      <g key={`bolt-${i}`}>
+                        <circle cx={bx} cy={by} r="2" fill="#222" stroke="#000" strokeWidth="0.5" />
+                        <circle cx={bx} cy={by} r="1" fill="#444" />
+                      </g>
+                    );
                   })}
                 </svg>
                 
-                {/* Thin dividing lines */}
-                <div className="absolute top-[20%] bottom-[20%] w-[1px] bg-gradient-to-b from-transparent via-[#222] to-transparent" />
-                <div className="absolute left-[20%] right-[20%] h-[1px] bg-gradient-to-r from-transparent via-[#222] to-transparent" />
+                {/* Thin technical crosshairs */}
+                <div className="absolute top-[10%] bottom-[10%] w-[1px] bg-gradient-to-b from-transparent via-[#ff003c]/20 to-transparent" />
+                <div className="absolute left-[10%] right-[10%] h-[1px] bg-gradient-to-r from-transparent via-[#ff003c]/20 to-transparent" />
               </div>
 
               {/* Bottom Row: Rear Brakes */}
