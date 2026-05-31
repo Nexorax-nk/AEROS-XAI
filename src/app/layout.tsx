@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "NEUROPIT | Mission Control",
+  title: "AEROS-XAI | Mission Control",
   description: "AEROS-XAI Mission Control",
 };
 

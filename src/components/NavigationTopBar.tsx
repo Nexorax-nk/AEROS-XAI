@@ -23,7 +23,7 @@ export function NavigationTopBar() {
           <Zap className="w-4 h-4 text-[#00f0ff]" />
         </div>
         <div className="flex flex-col">
-          <span className="text-white font-black tracking-tighter text-sm uppercase leading-none">NEUROPIT</span>
+          <span className="text-white font-black tracking-tighter text-sm uppercase leading-none">AEROS-XAI</span>
           <span className="text-[8px] text-[#555] uppercase tracking-widest font-bold mt-0.5">Systems</span>
         </div>
       </div>
